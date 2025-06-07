@@ -131,6 +131,7 @@ export default function EquipmentPage() {
                         const metricInfo = METRIC_CONFIGS[metricName];
                         const metricData = currentEquipment.metrics[metricName];
                         const MetricIcon = metricInfo.icon || Settings;
+                        const isPlaceholderTimestamp = metricData && metricData.timestamp === new Date(0).toISOString();
                         return (
                           <Card key={metricName} className="p-4 bg-card hover:shadow-md transition-shadow">
                             <div className="flex items-center justify-between mb-1">
@@ -141,7 +142,7 @@ export default function EquipmentPage() {
                               {metricData ? `${metricData.value.toLocaleString()}${metricInfo.unit}` : 'N/A'}
                             </p>
                             <p className="text-xs text-muted-foreground/70">
-                              Last updated: {metricData ? new Date(metricData.timestamp).toLocaleTimeString() : 'N/A'}
+                              Last updated: {metricData ? (isPlaceholderTimestamp ? 'Initializing...' : new Date(metricData.timestamp).toLocaleTimeString()) : 'N/A'}
                             </p>
                           </Card>
                         );
