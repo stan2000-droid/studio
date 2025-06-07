@@ -5,12 +5,22 @@ import { useState, useMemo } from 'react';
 import { PageHeader } from '@/components/shared/page-header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { BarChart, LineChart, HardHat, Settings } from 'lucide-react';
+import { BarChart as BarChartIcon, LineChart as LineChartIcon, HardHat, Settings } from 'lucide-react'; // Aliased lucide icons
 import { useMockData } from '@/hooks/use-mock-data';
 import { EQUIPMENT_TYPES, METRIC_CONFIGS, ALL_METRICS, EQUIPMENT_LABELS, EQUIPMENT_ICONS } from '@/lib/constants';
 import type { EquipmentType, MetricName, HistoricalDataPoint } from '@/lib/types';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
-import { Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend as RechartsLegend } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { 
+  Bar, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip as RechartsTooltip, 
+  ResponsiveContainer, 
+  Legend as RechartsLegend,
+  LineChart as RechartsLineChart // Imported LineChart from recharts and aliased
+} from 'recharts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
@@ -29,7 +39,7 @@ function MetricChart({ data, metricName, unit }: { data: HistoricalDataPoint[], 
   return (
     <ChartContainer config={chartConfig} className="min-h-[250px] w-full">
       <ResponsiveContainer width="100%" height={250}>
-        <LineChart data={data} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+        <RechartsLineChart data={data} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}> {/* Used aliased RechartsLineChart */}
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} fontSize={12} />
           <YAxis 
@@ -53,7 +63,7 @@ function MetricChart({ data, metricName, unit }: { data: HistoricalDataPoint[], 
             dot={{ r: 4, fill: chartConfig[metricName]?.color || chartColors[0] }}
             activeDot={{ r: 6 }}
           />
-        </LineChart>
+        </RechartsLineChart>
       </ResponsiveContainer>
     </ChartContainer>
   );
@@ -116,8 +126,8 @@ export default function EquipmentPage() {
                             <SelectValue placeholder="Select chart type" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="line"><LineChart className="inline-block mr-2 h-4 w-4" />Line Chart</SelectItem>
-                            <SelectItem value="bar"><BarChart className="inline-block mr-2 h-4 w-4" />Bar Chart</SelectItem>
+                            <SelectItem value="line"><LineChartIcon className="inline-block mr-2 h-4 w-4" />Line Chart</SelectItem>
+                            <SelectItem value="bar"><BarChartIcon className="inline-block mr-2 h-4 w-4" />Bar Chart</SelectItem>
                         </SelectContent>
                     </Select>
                   </div>
@@ -142,7 +152,7 @@ export default function EquipmentPage() {
                               {metricData ? `${metricData.value.toLocaleString()}${metricInfo.unit}` : 'N/A'}
                             </p>
                             <p className="text-xs text-muted-foreground/70">
-                              Last updated: {metricData ? (isPlaceholderTimestamp ? 'Initializing...' : new Date(metricData.timestamp).toLocaleTimeString()) : 'N/A'}
+                               Last updated: {metricData ? (isPlaceholderTimestamp ? 'Initializing...' : new Date(metricData.timestamp).toLocaleTimeString()) : 'N/A'}
                             </p>
                           </Card>
                         );
@@ -179,3 +189,4 @@ export default function EquipmentPage() {
     </>
   );
 }
+
