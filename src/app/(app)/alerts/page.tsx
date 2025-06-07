@@ -22,13 +22,13 @@ export default function AlertsPage() {
       {sortedAlerts.length > 0 ? (
         <div className="space-y-6">
           {sortedAlerts.map((alert) => (
-            <Card key={alert.id} className={`shadow-md border-l-4 ${alert.severity === 'critical' ? 'border-destructive bg-destructive/5' : 'border-yellow-500 bg-yellow-500/5'}`}>
+            <Card key={alert.id} className={`shadow-md border-l-4 ${alert.severity === 'critical' ? 'border-destructive bg-destructive/10' : 'border-accent bg-accent/10'}`}>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className={`font-headline text-lg ${alert.severity === 'critical' ? 'text-destructive' : 'text-yellow-600'}`}>
+                  <CardTitle className={`font-headline text-lg ${alert.severity === 'critical' ? 'text-destructive' : 'text-accent'}`}>
                     {EQUIPMENT_LABELS[alert.equipmentType]} - {METRIC_CONFIGS[alert.metricName].label} Alert
                   </CardTitle>
-                  <Badge variant={alert.severity === 'critical' ? 'destructive' : 'default'} className={alert.severity !== 'critical' ? 'bg-yellow-500 hover:bg-yellow-500/90' : ''}>
+                  <Badge variant={alert.severity === 'critical' ? 'destructive' : 'default'} className={alert.severity !== 'critical' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : ''}>
                     {alert.severity.toUpperCase()}
                   </Badge>
                 </div>

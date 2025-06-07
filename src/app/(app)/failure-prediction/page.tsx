@@ -17,6 +17,8 @@ import { predictFailure, type PredictFailureInput, type PredictFailureOutput } f
 import { EQUIPMENT_TYPES, METRIC_CONFIGS, ALL_METRICS, EQUIPMENT_LABELS } from '@/lib/constants';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
+import { Label } from '@/components/ui/label';
+
 
 const failurePredictionSchema = z.object({
   componentType: z.enum(['WindingRope', 'Sheave', 'Drum'], {
@@ -51,7 +53,7 @@ export default function FailurePredictionPage() {
   const form = useForm<FailurePredictionFormValues>({
     resolver: zodResolver(failurePredictionSchema),
     defaultValues: {
-      componentType: undefined, // Ensure it's undefined initially for placeholder
+      componentType: undefined, 
       temperature: 25,
       corrosion: 1,
       diameterReduction: 0,
@@ -64,7 +66,7 @@ export default function FailurePredictionPage() {
     setIsLoading(true);
     setPredictionResult(null);
     try {
-      const result = await predictFailure(data as PredictFailureInput); // Cast needed due to enum Zod type
+      const result = await predictFailure(data as PredictFailureInput); 
       setPredictionResult(result);
       toast({
         title: "Prediction Successful",
@@ -82,10 +84,10 @@ export default function FailurePredictionPage() {
     }
   };
 
-  const getProbabilityColor = (probability: number) => {
+  const getProbabilityColorClass = (probability: number) => {
     if (probability > 0.7) return 'bg-destructive';
-    if (probability > 0.4) return 'bg-yellow-500';
-    return 'bg-green-500';
+    if (probability > 0.4) return 'bg-accent';
+    return 'bg-green-500'; // Using a specific green for low risk
   };
 
 
@@ -222,13 +224,17 @@ export default function FailurePredictionPage() {
                 <div>
                   <Label className="text-sm text-muted-foreground">Failure Probability (next month)</Label>
                   <div className="flex items-center gap-3 mt-1">
-                    <Progress value={predictionResult.failureProbability * 100} className="w-full h-6" indicatorClassName={getProbabilityColor(predictionResult.failureProbability)} />
+                    <Progress 
+                        value={predictionResult.failureProbability * 100} 
+                        className="w-full h-6 rounded-full overflow-hidden" 
+                        indicatorClassName={getProbabilityColorClass(predictionResult.failureProbability)} 
+                    />
                     <span className="text-2xl font-bold text-foreground">
                       {(predictionResult.failureProbability * 100).toFixed(1)}%
                     </span>
                   </div>
                    {predictionResult.failureProbability > 0.7 && <p className="text-xs text-destructive mt-1 flex items-center"><AlertTriangle className="h-3 w-3 mr-1"/> High risk of failure.</p>}
-                   {predictionResult.failureProbability <= 0.7 && predictionResult.failureProbability > 0.4 && <p className="text-xs text-yellow-600 mt-1 flex items-center"><AlertTriangle className="h-3 w-3 mr-1"/>Moderate risk. Monitor closely.</p>}
+                   {predictionResult.failureProbability <= 0.7 && predictionResult.failureProbability > 0.4 && <p className="text-xs text-accent mt-1 flex items-center"><AlertTriangle className="h-3 w-3 mr-1"/>Moderate risk. Monitor closely.</p>}
                    {predictionResult.failureProbability <= 0.4 && <p className="text-xs text-green-600 mt-1 flex items-center"><CheckCircle className="h-3 w-3 mr-1"/>Low risk.</p>}
                 </div>
 

@@ -20,13 +20,12 @@ export default function DashboardPage() {
     return alertDate > fiveMinutesAgo;
   }).length;
   
-  // Calculate overall health: 100% if no active alerts, decreases with alerts
-  const overallHealth = Math.max(0, 100 - (activeAlertsCount * 20)); // Example: each alert reduces health by 20%
+  const overallHealth = Math.max(0, 100 - (activeAlertsCount * 20)); 
 
   const overviewStats = [
-    { title: 'Total Equipment', value: totalEquipment, icon: HardHat, color: 'text-blue-500', bgColor: 'bg-blue-50' },
-    { title: 'Active Alerts', value: activeAlertsCount, icon: AlertTriangle, color: activeAlertsCount > 0 ? 'text-destructive' : 'text-green-500', bgColor: activeAlertsCount > 0 ? 'bg-red-50' : 'bg-green-50' },
-    { title: 'Overall Health', value: `${overallHealth.toFixed(0)}%`, icon: overallHealth > 70 ? CheckCircle : Activity, color: overallHealth > 70 ? 'text-green-500' : 'text-yellow-500', bgColor: overallHealth > 70 ? 'bg-green-50' : 'bg-yellow-50' },
+    { title: 'Total Equipment', value: totalEquipment, icon: HardHat, color: 'text-primary', bgColor: 'bg-primary/10' },
+    { title: 'Active Alerts', value: activeAlertsCount, icon: AlertTriangle, color: activeAlertsCount > 0 ? 'text-destructive' : 'text-green-600', bgColor: activeAlertsCount > 0 ? 'bg-destructive/10' : 'bg-green-500/10' },
+    { title: 'Overall Health', value: `${overallHealth.toFixed(0)}%`, icon: overallHealth > 70 ? CheckCircle : Activity, color: overallHealth > 70 ? 'text-green-600' : 'text-accent', bgColor: overallHealth > 70 ? 'bg-green-500/10' : 'bg-accent/10' },
   ];
 
   return (
@@ -41,7 +40,7 @@ export default function DashboardPage() {
               <stat.icon className={`h-5 w-5 ${stat.color}`} />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-foreground">{stat.value}</div>
+              <div className={`text-3xl font-bold ${stat.color}`}>{stat.value}</div>
             </CardContent>
           </Card>
         ))}
@@ -87,13 +86,13 @@ export default function DashboardPage() {
             <CardDescription>Latest critical alerts from the system.</CardDescription>
           </CardHeader>
           <CardContent>
-            {alerts.length > 0 ? (
+            {alerts.filter(a => new Date(a.timestamp) > new Date(Date.now() - 5 * 60 * 1000)).slice(0,5).length > 0 ? (
               <ul className="space-y-3">
-                {alerts.slice(0, 5).map((alert) => (
-                  <li key={alert.id} className="flex items-start gap-3 p-3 rounded-md border bg-destructive/10 border-destructive/30">
-                    <AlertTriangle className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
+                {alerts.filter(a => new Date(a.timestamp) > new Date(Date.now() - 5 * 60 * 1000)).slice(0, 5).map((alert) => (
+                  <li key={alert.id} className={`flex items-start gap-3 p-3 rounded-md border ${alert.severity === 'critical' ? 'bg-destructive/10 border-destructive/30' : 'bg-accent/10 border-accent/30'}`}>
+                    <AlertTriangle className={`h-5 w-5 ${alert.severity === 'critical' ? 'text-destructive' : 'text-accent'} mt-0.5 shrink-0`} />
                     <div>
-                      <p className="text-sm font-medium text-destructive">
+                      <p className={`text-sm font-medium ${alert.severity === 'critical' ? 'text-destructive' : 'text-accent'}`}>
                         {EQUIPMENT_LABELS[alert.equipmentType]} - {METRIC_CONFIGS[alert.metricName].label}
                       </p>
                       <p className="text-xs text-muted-foreground">{alert.message}</p>
