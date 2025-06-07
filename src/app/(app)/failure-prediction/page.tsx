@@ -16,7 +16,7 @@ import { Brain, Sparkles, AlertTriangle, CheckCircle, Loader2 } from 'lucide-rea
 import { predictFailure, type PredictFailureInput, type PredictFailureOutput } from '@/ai/flows/failure-prediction';
 import { EQUIPMENT_TYPES, METRIC_CONFIGS, ALL_METRICS, EQUIPMENT_LABELS } from '@/lib/constants';
 import { Progress } from '@/components/ui/progress';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 const failurePredictionSchema = z.object({
   componentType: z.enum(['WindingRope', 'Sheave', 'Drum'], {
